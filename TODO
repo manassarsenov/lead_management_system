@@ -1,46 +1,46 @@
-Task 1 — Mini CRM
-Leadlarni qabul qilish, boshqarish va statusini o'zgartirish mumkin bo'lgan kichik CRM product yarating.
-Vazifa
-Sizga kichik kompaniya uchun lead management system yaratish vazifasi beriladi.
+    Task 1 — Mini CRM
+    Leadlarni qabul qilish, boshqarish va statusini o'zgartirish mumkin bo'lgan kichik CRM product yarating.
+    Vazifa
+    Sizga kichik kompaniya uchun lead management system yaratish vazifasi beriladi.
 
-System foydalanuvchiga leadlarni yaratish, ko'rish, tahrirlash va statusini boshqarish imkonini berishi kerak.
+    System foydalanuvchiga leadlarni yaratish, ko'rish, tahrirlash va statusini boshqarish imkonini berishi kerak.
 
-Minimum requirements
-Lead yaratish: name, phone/email, source, note
-Lead list: pagination, search, status filter
-Lead status: New, Contacted, Qualified, Won, Lost
-Lead detail: barcha ma'lumotlarni ko'rish, edit qilish, statusni o'zgartirish
-Backend API: authentication, CRUD API, validation, pagination, filtering
-Database: relational database ishlatish tavsiya qilinadi
-Basic error handling
-Candidate'dan kutiladi
-Faqat UI yasash emas - backend architecture va data modelni ham tushunishingiz kerak
-AI tools ishlatish mumkin
-Lekin AI'dan foydalangan joylaringizni tushuntira olishingiz kerak
-Generated code'ni tushunishingiz kerak
-Architecture qarorlaringizni izohlay olishingiz kerak
-Bonus (majburiy emas)
-Activity / history
-Sorting
-Dashboard statistics
-Docker
-Tests
-API documentation
-Deliverable
-Working application
-Source code
-README va setup instructions
-Qisqa architecture explanation
-Public GitHub repository URL (majburiy)
-Deployed/demo URL (iloji bo'lsa)
-Asosiy e'tibor
-Backend architecture va data model
-API dizayni: CRUD, validation, pagination, filtering
-Authentication va error handling
-Git tarixi: bosqichma-bosqich ishlanganmi
-Documentation va tushuntirish sifati
-AI'dan
+    Minimum requirements
+    Lead yaratish: name, phone/email, source, note
+    Lead list: pagination, search, status filter
+    Lead status: New, Contacted, Qualified, Won, Lost
+    Lead detail: barcha ma'lumotlarni ko'rish, edit qilish, statusni o'zgartirish
+    Backend API: authentication, CRUD API, validation, pagination, filtering
+    Database: relational database ishlatish tavsiya qilinadi
+    Basic error handling
+    Candidate'dan kutiladi
+    Faqat UI yasash emas - backend architecture va data modelni ham tushunishingiz kerak
+    AI tools ishlatish mumkin
+    Lekin AI'dan foydalangan joylaringizni tushuntira olishingiz kerak
+    Generated code'ni tushunishingiz kerak
+    Architecture qarorlaringizni izohlay olishingiz kerak
+    Bonus (majburiy emas)
+    Activity / history
+    Sorting
+    Dashboard statistics
+    Docker
+    Tests
+    API documentation
+    Deliverable
+    Working application
+    Source code
+    README va setup instructions
+    Qisqa architecture explanation
+    Public GitHub repository URL (majburiy)
+    Deployed/demo URL (iloji bo'lsa)
+    Asosiy e'tibor
+    Backend architecture va data model
+    API dizayni: CRUD, validation, pagination, filtering
+    Authentication va error handling
+    Git tarixi: bosqichma-bosqich ishlanganmi
+    Documentation va tushuntirish sifati
+    AI'dan
 
 
 
- foydalanish usuli va natijani tekshirish
+     foydalanish usuli va natijani tekshirish
