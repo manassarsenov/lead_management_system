@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'app',
+    'apps',
     'rest_framework_simplejwt',
     'rest_framework',
     'drf_spectacular',
@@ -82,6 +82,8 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'root.wsgi.application'
+AUTH_USER_MODEL = 'apps.User'
+
 
 # Database
 # https://docs.djangoproject.com/en/6.1/ref/settings/#databases
