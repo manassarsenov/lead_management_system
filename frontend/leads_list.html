@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LeadManager - Leads</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/main_base.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/leads_list.css">
+</head>
+<body>
+<div class="app-container">
+    <!-- Sidebar Placeholder - JS orqali yuklanadi -->
+    <div id="sidebar-placeholder"></div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header Placeholder - JS orqali yuklanadi -->
+        <div id="header-placeholder"></div>
+
+        <!-- Page Content -->
+        <main class="page-content" id="page-content">
+                <div class="page-header">
+                    <h1 class="page-title">Leads</h1>
+                    <p class="page-subtitle">Manage and track all your leads</p>
+                </div>
+
+                <!-- Filters and Actions -->
+                <div class="leads-actions">
+                    <div class="filters">
+                        <select class="filter-select" id="source-filter">
+                            <option value="">All Sources</option>
+                            <option value="website">Website</option>
+                            <option value="social-media">Social Media</option>
+                            <option value="referral">Referral</option>
+                            <option value="cold-call">Cold Call</option>
+                            <option value="other">Other</option>
+                        </select>
+                        <select class="filter-select" id="status-filter">
+                            <option value="">All Statuses</option>
+                            <option value="new">New</option>
+                            <option value="contacted">Contacted</option>
+                            <option value="qualified">Qualified</option>
+                            <option value="won">Won</option>
+                            <option value="lost">Lost</option>
+                        </select>
+                    </div>
+                    <a href="create_lead.html" class="btn btn-primary">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="5" x2="12" y2="19"/>
+                            <line x1="5" y1="12" x2="19" y2="12"/>
+                        </svg>
+                        Create Lead
+                    </a>
+                </div>
+
+                <!-- Leads Table -->
+                <div class="leads-table-container">
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th width="40">
+                                        <input type="checkbox" id="select-all" class="checkbox">
+                                    </th>
+                                    <th>Name</th>
+                                    <th>Phone/Email</th>
+                                    <th>Source</th>
+                                    <th>Status</th>
+                                    <th>Created</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leads-table-body">
+                                <!-- Leads will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="pagination">
+                        <div class="pagination-info">
+                            <span>Showing 1-10 of 247 leads</span>
+                        </div>
+                        <div class="pagination-controls">
+                            <button class="pagination-btn" disabled>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="15 18 9 12 15 6"/>
+                                </svg>
+                                Previous
+                            </button>
+                            <button class="pagination-btn active">1</button>
+                            <button class="pagination-btn">2</button>
+                            <button class="pagination-btn">3</button>
+                            <button class="pagination-btn">...</button>
+                            <button class="pagination-btn">25</button>
+                            <button class="pagination-btn">
+                                Next
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="9 18 15 12 9 6"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+        </main>
+    </div>
+</div>
+
+<!-- Modals Placeholder - JS orqali yuklanadi -->
+<div id="modals-placeholder"></div>
+
+<!-- Toasts Placeholder - JS orqali yuklanadi -->
+<div id="toasts-placeholder"></div>
+
+<!-- Component Loader -->
+<script src="js/component_loader.js"></script>
+<!-- Main Base JS -->
+<script src="js/main_base.js"></script>
+<!-- Leads JS -->
+<script src="js/leads_list.js"></script>
+</body>
+</html>
