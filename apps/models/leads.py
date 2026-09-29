@@ -68,3 +68,5 @@ class LeadActivity(CreatedBaseModel):
 
     class Meta:
         ordering = ['-created_at']
+        verbose_name = 'Lead Activity'
+        verbose_name_plural = 'Lead Activities'

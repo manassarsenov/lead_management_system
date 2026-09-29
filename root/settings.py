@@ -40,6 +40,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -83,7 +84,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'root.wsgi.application'
 AUTH_USER_MODEL = 'apps.User'
-
 
 # Database
 # https://docs.djangoproject.com/en/6.1/ref/settings/#databases
@@ -223,6 +223,35 @@ SIMPLE_JWT = {
     "CHECK_REVOKE_TOKEN": False,
     "REVOKE_TOKEN_CLAIM": "hash_password",
     "CHECK_USER_IS_ACTIVE": True,
+}
+
+JAZZMIN_SETTINGS = {
+    "site_title": "Lead Manager Admin",
+    "site_header": "Lead Manager",
+    "site_brand": "Lead Manager",
+    "welcome_sign": "Welcome to Lead Management System",
+    "copyright": "Lead Management System",
+    "search_model": ["apps.User", "apps.Lead"],
+    "show_sidebar": True,
+    "navigation_expanded": True,
+    "hide_apps": [],
+    "hide_models": [],
+    "order_with_respect_to": ["apps", "apps.User", "apps.Lead", "apps.LeadActivity"],
+    "icons": {
+        "apps": "fas fa-users-cog",
+        "apps.user": "fas fa-user",
+        "apps.lead": "fas fa-user-tie",
+        "apps.leadactivity": "fas fa-history",
+    },
+    "default_icon_parents": "fas fa-chevron-circle-right",
+    "default_icon_children": "fas fa-circle",
+    "related_modal_active": False,
+    "custom_css": None,
+    "custom_js": None,
+    "use_google_fonts_cdn": True,
+    "show_ui_builder": False,
+    "changeform_format": "horizontal_tabs",
+    "language_chooser": False,
 }
 
 # LOGGING = {
