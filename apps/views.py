@@ -7,7 +7,11 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
 from django.contrib.auth import get_user_model
-from apps.serializers import UserCreateSerializer, UserSerializer
+from apps.serializers import (
+    UserCreateSerializer, UserSerializer,
+    LeadSerializer, LeadCreateSerializer, LeadUpdateSerializer, LeadListSerializer
+)
+from apps.models import Lead
 
 User = get_user_model()
 
@@ -58,3 +62,25 @@ class UserViewSet(ModelViewSet):
 
         serializer = UserSerializer(request.user)
         return Response(serializer.data)
+
+
+@extend_schema(tags=['leads'])
+class LeadViewSet(ModelViewSet):
+    queryset = Lead.objects.select_related('assigned_to', 'created_by').prefetch_related('activities')
+    permission_classes = [IsAuthenticated]
+    filter_backends = [SearchFilter, OrderingFilter]
+    search_fields = ['name', 'email', 'phone', 'company']
+    ordering_fields = ['name', 'created_at', 'status', 'priority']
+    ordering = ['-created_at']
+
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return LeadListSerializer
+        elif self.action == 'create':
+            return LeadCreateSerializer
+        elif self.action in ['update', 'partial_update']:
+            return LeadUpdateSerializer
+        return LeadSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(created_by=self.request.user)
