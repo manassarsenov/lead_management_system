@@ -40,12 +40,12 @@ class UserCreateSerializer(ModelSerializer):
 
 class LeadActivitySerializer(ModelSerializer):
     user_details = UserSerializer(source='user', read_only=True)
-
+    lead_name = CharField(source='lead.name', read_only=True)
     class Meta:
         model = LeadActivity
         fields = ['id', 'lead', 'user', 'user_details', 'activity_type', 'title',
-                  'description', 'created_at', 'updated_at']
-        read_only_fields = ['id', 'created_at', 'updated_at']
+                  'description', 'created_at', 'updated_at','lead_name']
+        read_only_fields = ['id','user', 'created_at', 'updated_at']
 
 
 class LeadSerializer(ModelSerializer):
@@ -59,7 +59,7 @@ class LeadSerializer(ModelSerializer):
                   'assigned_to', 'assigned_to_details', 'created_by', 'created_by_details',
                   'company', 'website', 'priority', 'estimated_value', 'last_contacted',
                   'activities', 'created_at', 'updated_at']
-        read_only_fields = ['id', 'created_at', 'updated_at']
+        read_only_fields = ['id','created_by', 'created_at', 'updated_at']
 
 
 class LeadCreateSerializer(ModelSerializer):
@@ -95,7 +95,7 @@ class LeadListSerializer(ModelSerializer):
     class Meta:
         model = Lead
         fields = ['id', 'name', 'email', 'phone', 'source', 'status', 'priority',
-                  'assigned_to', 'assigned_to_name', 'company', 'created_at']
+                  'assigned_to', 'assigned_to_name', 'company', 'estimated_value','created_at']
 
 
 class CustomTokenObtainPairSerializer(TokenObtainSerializer):

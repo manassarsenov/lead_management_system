@@ -17,9 +17,9 @@ class Lead(CreatedBaseModel):
 
     class Source(TextChoices):
         WEBSITE = 'website', 'Website'
-        SOCIAL_MEDIA = 'social_media', 'Social Media'
+        SOCIAL_MEDIA = 'social-media', 'Social Media'
         REFERRAL = 'referral', 'Referral'
-        COLD_CALL = 'cold_call', 'Cold Call'
+        COLD_CALL = 'cold-call', 'Cold Call'
         OTHER = 'other', 'Other'
 
     class Priority(TextChoices):
