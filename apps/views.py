@@ -9,9 +9,10 @@ from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
 from django.contrib.auth import get_user_model
 from apps.serializers import (
     UserCreateSerializer, UserSerializer,
-    LeadSerializer, LeadCreateSerializer, LeadUpdateSerializer, LeadListSerializer
+    LeadSerializer, LeadCreateSerializer, LeadUpdateSerializer, LeadListSerializer,
+    LeadActivitySerializer
 )
-from apps.models import Lead
+from apps.models import Lead, LeadActivity
 
 User = get_user_model()
 
@@ -84,3 +85,17 @@ class LeadViewSet(ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)
+
+
+@extend_schema(tags=['activities'])
+class LeadActivityViewSet(ModelViewSet):
+    queryset = LeadActivity.objects.select_related('lead', 'user')
+    serializer_class = LeadActivitySerializer
+    permission_classes = [IsAuthenticated]
+    filter_backends = [SearchFilter, OrderingFilter]
+    search_fields = ['title', 'description']
+    ordering_fields = ['created_at']
+    ordering = ['-created_at']
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
