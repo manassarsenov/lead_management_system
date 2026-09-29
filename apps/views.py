@@ -20,6 +20,7 @@ class CustomTokenRefreshView(TokenRefreshView):
     pass
 
 
+@extend_schema(tags=['auth'])
 class RegisterView(APIView):
     permission_classes = [AllowAny]
 
