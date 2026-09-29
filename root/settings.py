@@ -145,6 +145,7 @@ MAILERS = {
         'BACKEND': 'django.core.mail.backends.console.EmailBackend',
     },
 }
+
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Lead Management System API',
     'DESCRIPTION': 'REST API for Lead Management System',
@@ -153,7 +154,7 @@ SPECTACULAR_SETTINGS = {
     'COMPONENT_SPLIT_REQUEST': True,
     'SWAGGER_UI_SETTINGS': {
         'defaultModelsExpandDepth': -1,
-        'deepLinking': True,
+        'deepLinking': True
     },
 }
 
