@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LeadManager - Create Lead</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/main_base.css">
+    <link rel="stylesheet" href="css/create_lead.css">
+</head>
+<body>
+<div class="app-container">
+    <!-- Sidebar Placeholder - JS orqali yuklanadi -->
+    <div id="sidebar-placeholder"></div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header Placeholder - JS orqali yuklanadi -->
+        <div id="header-placeholder"></div>
+
+        <!-- Page Content -->
+        <main class="page-content" id="page-content">
+                <div class="page-header">
+                    <h1 class="page-title">Create New Lead</h1>
+                    <p class="page-subtitle">Fill in the details to add a new lead</p>
+                </div>
+
+                <form class="create-lead-form" id="create-lead-form">
+                    <!-- Basic Information -->
+                    <div class="form-section">
+                        <h2 class="section-title">Basic Information</h2>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="name">Name <span class="required">*</span></label>
+                                <input type="text" id="name" name="name" placeholder="Enter full name" required>
+                                <span class="error-message" id="name-error"></span>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="phone">Phone <span class="required">*</span></label>
+                                <input type="tel" id="phone" name="phone" placeholder="+998 90 123 45 67" required>
+                                <span class="error-message" id="phone-error"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="email">Email <span class="required">*</span></label>
+                                <input type="email" id="email" name="email" placeholder="email@example.com" required>
+                                <span class="error-message" id="email-error"></span>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="source">Source</label>
+                                <select id="source" name="source">
+                                    <option value="">Select source</option>
+                                    <option value="website">Website</option>
+                                    <option value="social-media">Social Media</option>
+                                    <option value="referral">Referral</option>
+                                    <option value="cold-call">Cold Call</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="status">Status</label>
+                                <select id="status" name="status">
+                                    <option value="new">New</option>
+                                    <option value="contacted">Contacted</option>
+                                    <option value="qualified">Qualified</option>
+                                    <option value="won">Won</option>
+                                    <option value="lost">Lost</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="assigned-to">Assigned To</label>
+                                <select id="assigned-to" name="assigned-to">
+                                    <option value="">Select assignee</option>
+                                    <option value="john-doe">John Doe</option>
+                                    <option value="sarah-smith">Sarah Smith</option>
+                                    <option value="mike-johnson">Mike Johnson</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="note">Note</label>
+                            <textarea id="note" name="note" rows="3" placeholder="Add any additional notes..."></textarea>
+                            <span class="char-count"><span id="note-count">0</span>/500</span>
+                        </div>
+                    </div>
+
+                    <!-- Additional Information -->
+                    <div class="form-section">
+                        <h2 class="section-title">Additional Information</h2>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="company">Company</label>
+                                <input type="text" id="company" name="company" placeholder="Enter company name">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="website">Website</label>
+                                <input type="url" id="website" name="website" placeholder="https://example.com">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="priority">Priority</label>
+                                <select id="priority" name="priority">
+                                    <option value="low">Low</option>
+                                    <option value="medium" selected>Medium</option>
+                                    <option value="high">High</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="estimated-value">Estimated Value</label>
+                                <input type="number" id="estimated-value" name="estimated-value" placeholder="Enter estimated value">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="cancelForm()">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Create Lead</button>
+                    </div>
+                </form>
+        </main>
+    </div>
+</div>
+
+<!-- Modals Placeholder - JS orqali yuklanadi -->
+<div id="modals-placeholder"></div>
+
+<!-- Toasts Placeholder - JS orqali yuklanadi -->
+<div id="toasts-placeholder"></div>
+
+<!-- Component Loader -->
+<script src="js/component_loader.js"></script>
+<!-- Main Base JS -->
+<script src="js/main_base.js"></script>
+<!-- Create Lead JS -->
+<script src="js/create_lead.js"></script>
+</body>
+</html>
