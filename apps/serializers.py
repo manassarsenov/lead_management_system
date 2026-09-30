@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import CharField
-from rest_framework.serializers import ModelSerializer
+from rest_framework.fields import CharField, IntegerField, FloatField, DictField
+from rest_framework.serializers import ModelSerializer, Serializer
 from rest_framework_simplejwt.serializers import TokenObtainSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 
@@ -65,7 +65,7 @@ class LeadSerializer(ModelSerializer):
 class LeadCreateSerializer(ModelSerializer):
     class Meta:
         model = Lead
-        fields = ['name', 'email', 'phone', 'source', 'status', 'note',
+        fields = ['id','name', 'email', 'phone', 'source', 'status', 'note',
                   'assigned_to', 'company', 'website', 'priority', 'estimated_value']
 
     def validate_email(self, value):
@@ -111,3 +111,10 @@ class CustomTokenObtainPairSerializer(TokenObtainSerializer):
         data["data"] = UserSerializer(self.user).data
 
         return data
+
+class DashboardStatsSerializer(Serializer):
+    total_leads = IntegerField()
+    total_pipeline_value = FloatField()
+    won_leads = IntegerField()
+    conversion_rate = FloatField()
+    status_breakdown = DictField(child=IntegerField())

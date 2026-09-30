@@ -13,7 +13,7 @@ from django.contrib.auth import get_user_model
 from apps.serializers import (
     UserCreateSerializer, UserSerializer,
     LeadSerializer, LeadCreateSerializer, LeadUpdateSerializer, LeadListSerializer,
-    LeadActivitySerializer, CustomTokenObtainPairSerializer
+    LeadActivitySerializer, CustomTokenObtainPairSerializer, DashboardStatsSerializer
 )
 from apps.models import Lead, LeadActivity
 
@@ -107,7 +107,10 @@ class LeadActivityViewSet(ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
-@extend_schema(tags=['dashboard'])
+
+@extend_schema(
+    tags=['dashboard'],
+    responses={200: DashboardStatsSerializer})
 class DashboardStatsAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
