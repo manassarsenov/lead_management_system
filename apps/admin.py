@@ -18,10 +18,17 @@ class LeadAdmin(admin.ModelAdmin):
     ordering = ['-created_at']
     date_hierarchy = 'created_at'
 
+    list_editable = ['status', 'priority']
+    autocomplete_fields = ['assigned_to']
+    readonly_fields = ['created_at', 'updated_at']
+
 
 @admin.register(LeadActivity)
 class LeadActivityAdmin(admin.ModelAdmin):
     list_display = ['lead', 'activity_type', 'title', 'user', 'created_at']
     list_filter = ['activity_type', 'created_at']
-    search_fields = ['title', 'description', 'lead__name']
+    search_fields = ['title', 'description', 'lead__name','user__email']
     ordering = ['-created_at']
+
+    autocomplete_fields = ['lead', 'user']
+    readonly_fields = ['created_at', 'updated_at']
