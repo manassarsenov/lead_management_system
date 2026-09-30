@@ -1,9 +1,43 @@
-const API_BASE_URL = 'http://127.0.0.1:8000/api/v1';
 // Login Page JavaScript
 document.addEventListener('DOMContentLoaded', function () {
     const tabBtns = document.querySelectorAll('.tab-btn');
     const loginForm = document.getElementById('login-form');
     const registerForm = document.getElementById('register-form');
+    const loginAlert = document.getElementById('login-alert');
+    const registerAlert = document.getElementById('register-alert');
+
+    function showError(formType, message) {
+        const alertBox = formType === 'login' ? loginAlert : registerAlert;
+        if (alertBox) {
+            alertBox.textContent = message;
+            alertBox.className = 'auth-alert error';
+            alertBox.style.display = 'block';
+        }
+    }
+
+    function hideAlerts() {
+        if (loginAlert) { loginAlert.style.display = 'none'; loginAlert.textContent = ''; }
+        if (registerAlert) { registerAlert.style.display = 'none'; registerAlert.textContent = ''; }
+    }
+
+    function parseApiError(data, defaultMsg = 'Xatolik yuz berdi.') {
+        if (!data) return defaultMsg;
+        if (typeof data === 'string') return data;
+        if (data.detail) return data.detail;
+
+        let messages = [];
+        for (let key in data) {
+            let val = data[key];
+            if (Array.isArray(val)) {
+                messages.push(`${key}: ${val.join(', ')}`);
+            } else if (typeof val === 'string') {
+                messages.push(`${key}: ${val}`);
+            } else if (typeof val === 'object') {
+                messages.push(`${key}: ${JSON.stringify(val)}`);
+            }
+        }
+        return messages.length > 0 ? messages.join('\n') : defaultMsg;
+    }
 
     // 1. Agar foydalanuvchi allaqachon tizimga kirgan bo'lsa, uni to'g'ridan-to'g'ri Dashboardga yo'naltiramiz
     if (localStorage.getItem('access_token')) {
@@ -15,6 +49,7 @@ document.addEventListener('DOMContentLoaded', function () {
     tabBtns.forEach(btn => {
         btn.addEventListener('click', function () {
             const tab = this.dataset.tab;
+            hideAlerts();
 
             // Update active tab button
             tabBtns.forEach(b => b.classList.remove('active'));
@@ -34,11 +69,12 @@ document.addEventListener('DOMContentLoaded', function () {
     // Login form submission
     loginForm.addEventListener('submit', async function (e) {
         e.preventDefault();
+        hideAlerts();
         const email = document.getElementById('login-email').value.trim();
         const password = document.getElementById('login-password').value;
         const submitBtn = loginForm.querySelector('button[type="submit"]');
         submitBtn.disabled = true;
-        submitBtn.textContent = 'Loading in...';
+        submitBtn.textContent = 'Tizimga kirilmoqda...';
 
         try {
             const response = await fetch(`${API_BASE_URL}/auth/token/`, {
@@ -59,15 +95,20 @@ document.addEventListener('DOMContentLoaded', function () {
                     localStorage.setItem('user', JSON.stringify(data.data));
                 }
 
-                // Asosiy sahifaga o'tamiz
-                window.location.href = 'dashboard.html';
+                Toast.success('Tizimga muvaffaqiyatli kirdingiz! Dashboardga yo‘naltirilmoqda...');
+                
+                // 1 soniya kutib keyin Dashboardga o'tish (foydalanuvchi xabarni ko'rishi uchun)
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1000);
             } else {
-                Toast.error(data.detail || 'Email yoki parol noto‘g‘ri kiritildi!');
+                showError('login', parseApiError(data, 'Email yoki parol noto‘g‘ri kiritildi!'));
+                submitBtn.disabled = false;
+                submitBtn.innerText = 'Login';
             }
         } catch (error) {
             console.error('Login error:', error);
-            Toast.error('Server bilan bog‘lanishda xatolik yuz berdi. Backend ishlab turganini tekshiring.');
-        } finally {
+            showError('login', 'Server bilan bog‘lanishda xatolik yuz berdi. Backend ishlab turganini tekshiring.');
             submitBtn.disabled = false;
             submitBtn.innerText = 'Login';
         }
@@ -76,6 +117,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Register form submission
     registerForm.addEventListener('submit', async function (e) {
         e.preventDefault();
+        hideAlerts();
         const firstName = document.getElementById('register-first-name').value.trim();
         const lastName = document.getElementById('register-last-name').value.trim();
         const email = document.getElementById('register-email').value.trim();
@@ -85,7 +127,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const submitBtn = registerForm.querySelector('button[type="submit"]');
 
         if (password !== passwordConfirm) {
-            Toast.error('Parollar bir-biriga mos kelmadi!');
+            showError('register', 'Parollar bir-biriga mos kelmadi!');
             return;
         }
 
@@ -115,21 +157,18 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Login tabiga o'tkazish
                 document.querySelector('.tab-btn[data-tab="login"]').click();
                 document.getElementById('login-email').value = email;
+                submitBtn.disabled = false;
+                submitBtn.innerText = 'Create Account';
             } else {
-                let errorMsg = 'Xatolik yuz berdi: ';
-                for (let key in data) {
-                    errorMsg += `\n${key}: ${data[key]}`;
-                }
-                Toast.error(errorMsg);
+                showError('register', parseApiError(data, 'Ro‘yxatdan o‘tishda xatolik yuz berdi.'));
+                submitBtn.disabled = false;
+                submitBtn.innerText = 'Create Account';
             }
         } catch (error) {
             console.error('Register error:', error);
-            Toast.error('Server bilan bog‘lanishda xatolik yuz berdi.');
-        } finally {
+            showError('register', 'Server bilan bog‘lanishda xatolik yuz berdi.');
             submitBtn.disabled = false;
             submitBtn.innerText = 'Create Account';
         }
-
-
     });
 });

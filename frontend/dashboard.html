@@ -36,8 +36,8 @@
                         </div>
                         <div class="stat-info">
                             <p class="stat-label">Total Leads</p>
-                            <p class="stat-value">1,247</p>
-                            <p class="stat-change positive">+12.5%</p>
+                            <p class="stat-value" id="stat-total-leads">0</p>
+                            <p class="stat-change positive" id="growth-total">+0%</p>
                         </div>
                     </div>
 
@@ -51,8 +51,8 @@
                         </div>
                         <div class="stat-info">
                             <p class="stat-label">New</p>
-                            <p class="stat-value">234</p>
-                            <p class="stat-change positive">+8.2%</p>
+                            <p class="stat-value" id="stat-new-leads">0</p>
+                            <p class="stat-change positive" id="growth-new">+0%</p>
                         </div>
                     </div>
 
@@ -64,8 +64,8 @@
                         </div>
                         <div class="stat-info">
                             <p class="stat-label">Contacted</p>
-                            <p class="stat-value">456</p>
-                            <p class="stat-change positive">+5.7%</p>
+                            <p class="stat-value" id="stat-contacted-leads">0</p>
+                            <p class="stat-change positive" id="growth-contacted">+0%</p>
                         </div>
                     </div>
 
@@ -78,8 +78,8 @@
                         </div>
                         <div class="stat-info">
                             <p class="stat-label">Qualified</p>
-                            <p class="stat-value">189</p>
-                            <p class="stat-change positive">+15.3%</p>
+                            <p class="stat-value" id="stat-qualified-leads">0</p>
+                            <p class="stat-change positive" id="growth-qualified">+0%</p>
                         </div>
                     </div>
 
@@ -96,8 +96,8 @@
                         </div>
                         <div class="stat-info">
                             <p class="stat-label">Won</p>
-                            <p class="stat-value">312</p>
-                            <p class="stat-change positive">+22.1%</p>
+                            <p class="stat-value" id="stat-won-leads">0</p>
+                            <p class="stat-change positive" id="growth-won">+0%</p>
                         </div>
                     </div>
 
@@ -111,8 +111,8 @@
                         </div>
                         <div class="stat-info">
                             <p class="stat-label">Lost</p>
-                            <p class="stat-value">56</p>
-                            <p class="stat-change negative">-3.2%</p>
+                            <p class="stat-value" id="stat-lost-leads">0</p>
+                            <p class="stat-change negative" id="growth-lost">-0%</p>
                         </div>
                     </div>
                 </div>
@@ -161,124 +161,8 @@
                                     <th>Actions</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <div class="lead-name">
-                                            <div class="lead-avatar">AR</div>
-                                            <span>Ali Rahimov</span>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="contact-info">
-                                            <span>+998 90 123 45 67</span>
-                                            <span>ali@example.com</span>
-                                        </div>
-                                    </td>
-                                    <td>Website</td>
-                                    <td><span class="status-badge qualified">Qualified</span></td>
-                                    <td>Apr 25, 2025</td>
-                                    <td>
-                                        <div class="action-buttons">
-                                            <button class="action-btn" title="View">
-                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                                                    <circle cx="12" cy="12" r="3"/>
-                                                </svg>
-                                            </button>
-                                            <button class="action-btn" title="Edit">
-                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                                                </svg>
-                                            </button>
-                                            <button class="action-btn danger" title="Delete">
-                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                    <polyline points="3 6 5 6 21 6"/>
-                                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-                                                </svg>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="lead-name">
-                                            <div class="lead-avatar">SK</div>
-                                            <span>Sarah Karimova</span>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="contact-info">
-                                            <span>+998 91 234 56 78</span>
-                                            <span>sarah@example.com</span>
-                                        </div>
-                                    </td>
-                                    <td>Social Media</td>
-                                    <td><span class="status-badge new">New</span></td>
-                                    <td>Apr 26, 2025</td>
-                                    <td>
-                                        <div class="action-buttons">
-                                            <button class="action-btn" title="View">
-                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                                                    <circle cx="12" cy="12" r="3"/>
-                                                </svg>
-                                            </button>
-                                            <button class="action-btn" title="Edit">
-                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                                                </svg>
-                                            </button>
-                                            <button class="action-btn danger" title="Delete">
-                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                    <polyline points="3 6 5 6 21 6"/>
-                                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-                                                </svg>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="lead-name">
-                                            <div class="lead-avatar">JT</div>
-                                            <span>John Toshmatov</span>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="contact-info">
-                                            <span>+998 93 456 78 90</span>
-                                            <span>john@example.com</span>
-                                        </div>
-                                    </td>
-                                    <td>Referral</td>
-                                    <td><span class="status-badge contacted">Contacted</span></td>
-                                    <td>Apr 27, 2025</td>
-                                    <td>
-                                        <div class="action-buttons">
-                                            <button class="action-btn" title="View">
-                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                                                    <circle cx="12" cy="12" r="3"/>
-                                                </svg>
-                                            </button>
-                                            <button class="action-btn" title="Edit">
-                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                                                </svg>
-                                            </button>
-                                            <button class="action-btn danger" title="Delete">
-                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                    <polyline points="3 6 5 6 21 6"/>
-                                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-                                                </svg>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
+                            <tbody id="recent-leads-tbody">
+                                <!-- Dynamic leads will be inserted here -->
                             </tbody>
                         </table>
                     </div>

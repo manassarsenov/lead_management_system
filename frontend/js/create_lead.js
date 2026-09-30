@@ -1,8 +1,29 @@
-// Create Lead Page JavaScript
+// Create Lead Page JavaScript - Dynamic Backend Integration
 document.addEventListener('DOMContentLoaded', function() {
+    if (!localStorage.getItem('access_token')) {
+        window.location.href = 'login.html';
+        return;
+    }
+
     initForm();
     initCharacterCount();
+    loadAssignees();
 });
+
+async function loadAssignees() {
+    try {
+        const users = await apiJson('/users/');
+        const select = document.getElementById('assigned-to');
+        if (!select) return;
+
+        const userList = Array.isArray(users) ? users : (users.results || []);
+        select.innerHTML = '<option value="">Select assignee</option>' + userList.map(user => `
+            <option value="${user.id}">${user.first_name || ''} ${user.last_name || ''} (${user.email})</option>
+        `).join('');
+    } catch (error) {
+        console.error('Error loading assignees:', error);
+    }
+}
 
 function initForm() {
     const form = document.getElementById('create-lead-form');
@@ -62,10 +83,6 @@ function validateForm() {
         errors.phone = 'Phone is required';
         phone.classList.add('error');
         isValid = false;
-    } else if (!/^\+?\d{9,15}$/.test(phone.value.replace(/\s/g, ''))) {
-        errors.phone = 'Phone must be 9-15 digits';
-        phone.classList.add('error');
-        isValid = false;
     }
 
     // Validate Email
@@ -89,7 +106,6 @@ function validateForm() {
         }
     });
 
-    // Show error banner if there are errors
     if (!isValid) {
         showFormErrorBanner();
     }
@@ -119,30 +135,49 @@ function showFormErrorBanner() {
     banner.classList.add('visible');
 }
 
-function submitForm() {
-    const formData = {
-        name: document.getElementById('name').value,
-        phone: document.getElementById('phone').value,
-        email: document.getElementById('email').value,
-        source: document.getElementById('source').value,
-        status: document.getElementById('status').value,
-        assignedTo: document.getElementById('assigned-to').value,
-        note: document.getElementById('note').value,
-        company: document.getElementById('company').value,
-        website: document.getElementById('website').value,
-        priority: document.getElementById('priority').value,
-        estimatedValue: document.getElementById('estimated-value').value
+async function submitForm() {
+    const assignedToVal = document.getElementById('assigned-to').value;
+    const payload = {
+        name: document.getElementById('name').value.trim(),
+        phone: document.getElementById('phone').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        source: document.getElementById('source').value || 'other',
+        status: document.getElementById('status').value || 'new',
+        assigned_to: assignedToVal ? parseInt(assignedToVal) : null,
+        note: document.getElementById('note').value.trim(),
+        company: document.getElementById('company').value.trim(),
+        website: document.getElementById('website').value.trim(),
+        priority: document.getElementById('priority').value || 'medium',
+        estimated_value: document.getElementById('estimated-value').value ? parseFloat(document.getElementById('estimated-value').value) : 0
     };
 
-    console.log('Form data:', formData);
+    const submitBtn = document.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Creating...';
 
-    // TODO: Call API to create lead
-    Toast.success('Lead created successfully!');
-    
-    // Redirect to leads page after a short delay
-    setTimeout(() => {
-        window.location.href = 'leads_list.html';
-    }, 1500);
+    try {
+        await apiJson('/leads/', {
+            method: 'POST',
+            body: JSON.stringify(payload)
+        });
+
+        Toast.success('Lead created successfully!');
+        
+        setTimeout(() => {
+            window.location.href = 'leads_list.html';
+        }, 1000);
+    } catch (error) {
+        console.error('Create lead error:', error);
+        let errorMsg = 'Lead yaratishda xatolik yuz berdi: ';
+        if (error && typeof error === 'object') {
+            for (let key in error) {
+                errorMsg += `\n${key}: ${Array.isArray(error[key]) ? error[key].join(', ') : error[key]}`;
+            }
+        }
+        Toast.error(errorMsg);
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Create Lead';
+    }
 }
 
 function cancelForm() {
@@ -150,7 +185,7 @@ function cancelForm() {
         title: 'Cancel?',
         content: '<p>Are you sure you want to cancel? Any unsaved changes will be lost.</p>',
         confirmText: 'Yes, Cancel',
-        cancelText: 'No, Continue'
+        cancelText: 'Continue Editing'
     }).then(confirmed => {
         if (confirmed) {
             window.location.href = 'leads_list.html';

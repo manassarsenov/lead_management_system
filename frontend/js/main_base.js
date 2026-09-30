@@ -1,5 +1,71 @@
 // Main Base JavaScript - Reusable Components
 
+const API_BASE_URL = 'http://127.0.0.1:8000/api/v1';
+
+function logout() {
+    localStorage.clear();
+    window.location.href = 'login.html';
+}
+
+// Parallel so'rovlar bir vaqtda faqat BITTA refresh qilsin
+let refreshPromise = null;
+
+function refreshAccessToken() {
+    if (!refreshPromise) {
+        refreshPromise = fetch(`${API_BASE_URL}/auth/refresh-token/`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({refresh: localStorage.getItem('refresh_token')})
+        })
+            .then(async (r) => {
+                if (!r.ok) return null;
+                const d = await r.json();
+                localStorage.setItem('access_token', d.access);
+                if (d.refresh) localStorage.setItem('refresh_token', d.refresh);
+                return d.access;
+            })
+            .catch(() => null)
+            .finally(() => {
+                refreshPromise = null;
+            });
+    }
+    return refreshPromise;
+}
+
+async function apiFetch(path, options = {}) {
+    const send = (token) => fetch(`${API_BASE_URL}${path}`, {
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
+            ...options.headers,
+            Authorization: `Bearer ${token}`
+        }
+    });
+
+    let res = await send(localStorage.getItem('access_token'));
+
+    if (res.status === 401) {
+        const newToken = await refreshAccessToken();
+        if (!newToken) {
+            logout();
+            throw new Error('Session expired');
+        }
+        res = await send(newToken);
+    }
+    return res;
+}
+
+// JSON qaytaradigan so'rovlar uchun qisqa yo'l
+async function apiJson(path, options = {}) {
+    const res = await apiFetch(path, options);
+    const data = res.status === 204 ? null : await res.json();
+    if (!res.ok) throw data;
+    return data;
+}
+
+window.apiFetch = apiFetch;
+window.apiJson = apiJson;
+window.logout = logout;
 // Navigation configuration
 const navItems = [
     {
@@ -75,8 +141,13 @@ function initSidebarToggle() {
 // Modal Component
 const Modal = {
     show(options) {
-        const container = document.getElementById('modal-container');
-        if (!container) return;
+        let container = document.getElementById('modal-container');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'modal-container';
+            container.className = 'modal-container';
+            document.body.appendChild(container);
+        }
 
         const {
             title,
@@ -146,8 +217,13 @@ const Modal = {
 // Toast Component
 const Toast = {
     show(message, type = 'info', duration = 3000) {
-        const container = document.getElementById('toast-container');
-        if (!container) return;
+        let container = document.getElementById('toast-container');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'toast-container';
+            container.className = 'toast-container';
+            document.body.appendChild(container);
+        }
 
         const icons = {
             success: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>',
@@ -229,7 +305,7 @@ function initUserProfile() {
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                     Profile
                 </a>
-                <a href="#" class="dropdown-item">
+                <a href="#" class="dropdown-item" id="logout-btn">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>
                     Logout
                 </a>
@@ -237,6 +313,12 @@ function initUserProfile() {
         `;
 
         userProfile.appendChild(dropdown);
+
+        // Logout tugmasi
+        dropdown.querySelector('#logout-btn').addEventListener('click', (e) => {
+            e.preventDefault();
+            logout();
+        });
 
         // Close dropdown when clicking outside
         setTimeout(() => {
@@ -262,15 +344,11 @@ function initGlobalSearch() {
     });
 }
 
-// 1. Foydalanuvchi tizimga kirganligini tekshirish (Auth Guard)
-const token = localStorage.getItem('access_token');
 const isLoginPage = window.location.pathname.endsWith('login.html');
 
-if (!token && !isLoginPage) {
-    // Agar token bo'lmasa, majburiy login sahifasiga yo'naltirish
+if (!localStorage.getItem('access_token') && !isLoginPage) {
     window.location.href = 'login.html';
 }
-
 // Initialize all components
 document.addEventListener('DOMContentLoaded', function () {
     initSidebar();

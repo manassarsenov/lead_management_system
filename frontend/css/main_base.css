@@ -366,8 +366,8 @@
     flex: 1;
     font-size: 14px;
     color: var(--text-primary);
+    white-space: pre-line;   /* Register xatolaridagi \n yangi qatorga aylansin */
 }
-
 .toast-close {
     background: none;
     border: none;

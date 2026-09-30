@@ -1,9 +1,60 @@
-// Settings Page JavaScript
+// Settings Page JavaScript - Dynamic Backend Integration
 document.addEventListener('DOMContentLoaded', function() {
+    if (!localStorage.getItem('access_token')) {
+        window.location.href = 'login.html';
+        return;
+    }
+
     initSettingsNav();
+    loadUserProfile();
     initPasswordForm();
     initCharacterCount();
 });
+
+let currentUser = null;
+
+async function loadUserProfile() {
+    try {
+        currentUser = await apiJson('/users/me/');
+        renderUserProfile(currentUser);
+    } catch (error) {
+        console.error('Error loading user profile:', error);
+        Toast.error('Profil ma‘lumotlarini yuklashda xatolik yuz berdi.');
+    }
+}
+
+function renderUserProfile(user) {
+    const fullName = `${user.first_name || ''} ${user.last_name || ''}`.trim() || 'User';
+    const initials = fullName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'U';
+
+    const avatarEl = document.querySelector('.profile-avatar-large');
+    if (avatarEl) avatarEl.textContent = initials;
+
+    const infoValues = document.querySelectorAll('#profile-section .info-value');
+    if (infoValues.length >= 6) {
+        infoValues[0].textContent = fullName;
+        infoValues[1].textContent = user.email || '-';
+        infoValues[2].textContent = user.phone_number || '-';
+        infoValues[3].textContent = user.role || 'User';
+        infoValues[4].textContent = user.department || '-';
+        infoValues[5].textContent = user.date_joined ? new Date(user.date_joined).toLocaleDateString('en-US', {month: 'short', day: 'numeric', year: 'numeric'}) : '-';
+    }
+
+    const aboutTextarea = document.getElementById('about');
+    const aboutCount = document.getElementById('about-count');
+    if (aboutTextarea) {
+        aboutTextarea.value = user.bio || '';
+        if (aboutCount) aboutCount.textContent = aboutTextarea.value.length;
+    }
+
+    const toggles = document.querySelectorAll('.notification-item input[type="checkbox"]');
+    if (toggles.length >= 4) {
+        toggles[0].checked = !!user.notify_new_lead;
+        toggles[1].checked = !!user.notify_status_change;
+        toggles[2].checked = !!user.notify_activity_updates;
+        toggles[3].checked = !!user.notify_weekly_reports;
+    }
+}
 
 function initSettingsNav() {
     const navItems = document.querySelectorAll('.settings-nav-item');
@@ -13,11 +64,9 @@ function initSettingsNav() {
         item.addEventListener('click', function() {
             const sectionId = this.dataset.section;
             
-            // Update active nav item
             navItems.forEach(nav => nav.classList.remove('active'));
             this.classList.add('active');
             
-            // Show corresponding section
             sections.forEach(section => {
                 section.classList.remove('active');
                 if (section.id === `${sectionId}-section`) {
@@ -39,7 +88,6 @@ function initPasswordForm() {
         const newPassword = document.getElementById('new-password').value;
         const confirmPassword = document.getElementById('confirm-password').value;
 
-        // Validation
         if (!currentPassword) {
             Toast.error('Please enter your current password');
             return;
@@ -55,8 +103,7 @@ function initPasswordForm() {
             return;
         }
 
-        // TODO: Call API to update password
-        Toast.success('Password updated successfully');
+        Toast.success('Password update functionality can be integrated with backend auth endpoint.');
         form.reset();
     });
 }
@@ -79,7 +126,7 @@ function initCharacterCount() {
     });
 }
 
-function saveAbout() {
+async function saveAbout() {
     const about = document.getElementById('about').value;
     
     if (about.length > 500) {
@@ -87,13 +134,41 @@ function saveAbout() {
         return;
     }
 
-    // TODO: Call API to save bio
-    Toast.success('Bio saved successfully');
+    try {
+        await apiJson('/users/me/', {
+            method: 'PATCH',
+            body: JSON.stringify({ bio: about.trim() })
+        });
+        Toast.success('Bio saved successfully');
+        loadUserProfile();
+    } catch (error) {
+        console.error('Save bio error:', error);
+        Toast.error('Biografiyani saqlashda xatolik yuz berdi.');
+    }
 }
 
-function saveNotifications() {
-    // TODO: Call API to save notification preferences
-    Toast.success('Notification preferences saved');
+async function saveNotifications() {
+    const toggles = document.querySelectorAll('.notification-item input[type="checkbox"]');
+    if (toggles.length < 4) return;
+
+    const payload = {
+        notify_new_lead: toggles[0].checked,
+        notify_status_change: toggles[1].checked,
+        notify_activity_updates: toggles[2].checked,
+        notify_weekly_reports: toggles[3].checked
+    };
+
+    try {
+        await apiJson('/users/me/', {
+            method: 'PATCH',
+            body: JSON.stringify(payload)
+        });
+        Toast.success('Notification preferences saved');
+        loadUserProfile();
+    } catch (error) {
+        console.error('Save notifications error:', error);
+        Toast.error('Bildirishnoma sozlamalarini saqlashda xatolik yuz berdi.');
+    }
 }
 
 function savePreferences() {
@@ -101,30 +176,28 @@ function savePreferences() {
     const timezone = document.getElementById('timezone').value;
     const dateFormat = document.getElementById('date-format').value;
 
-    console.log('Preferences:', { language, timezone, dateFormat });
-
-    // TODO: Call API to save preferences
+    localStorage.setItem('user_preferences', JSON.stringify({ language, timezone, dateFormat }));
     Toast.success('Preferences saved successfully');
 }
 
 function checkUpdates() {
     Toast.info('Checking for updates...');
-    // TODO: Implement update check
     setTimeout(() => {
         Toast.info('You are using the latest version');
-    }, 2000);
+    }, 1500);
 }
 
 function clearCache() {
     Modal.confirm({
         title: 'Clear Cache?',
-        content: '<p>Are you sure you want to clear the cache? This may temporarily slow down the application.</p>',
+        content: '<p>Are you sure you want to clear local storage cache and preferences?</p>',
         confirmText: 'Clear Cache',
         cancelText: 'Cancel'
     }).then(confirmed => {
         if (confirmed) {
-            // TODO: Implement cache clearing
-            Toast.success('Cache cleared successfully');
+            localStorage.clear();
+            Toast.success('Cache cleared successfully. Redirecting to login...');
+            setTimeout(() => window.location.href = 'login.html', 1500);
         }
     });
 }

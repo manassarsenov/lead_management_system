@@ -163,11 +163,43 @@ class DashboardStatsAPIView(APIView):
         conversion_rate = round((won_leads / total_leads * 100), 2) if total_leads > 0 else 0
 
         status_counts = leads.order_by().values('status').annotate(count=Count('id'))
+        status_breakdown = {item['status']: item['count'] for item in status_counts}
+
+        # Calculate weekly growth percentages comparing last 7 days vs previous 7 days
+        from django.utils import timezone
+        from datetime import timedelta
+
+        now = timezone.now()
+        week_ago = now - timedelta(days=7)
+        two_weeks_ago = now - timedelta(days=14)
+
+        def calc_growth(queryset, status_filter=None):
+            qs = queryset if status_filter is None else queryset.filter(status=status_filter)
+            current_week = qs.filter(created_at__gte=week_ago).count()
+            prev_week = qs.filter(created_at__gte=two_weeks_ago, created_at__lt=week_ago).count()
+            if prev_week == 0:
+                return 100.0 if current_week > 0 else 0.0
+            return round(((current_week - prev_week) / prev_week) * 100, 1)
+
+        total_growth = calc_growth(leads)
+        new_growth = calc_growth(leads, 'new')
+        contacted_growth = calc_growth(leads, 'contacted')
+        qualified_growth = calc_growth(leads, 'qualified')
+        won_growth = calc_growth(leads, 'won')
+        lost_growth = calc_growth(leads, 'lost')
 
         return Response({
             'total_leads': total_leads,
             'total_pipeline_value': float(total_pipeline_value),
             'won_leads': won_leads,
             'conversion_rate': conversion_rate,
-            'status_breakdown': {item['status']: item['count'] for item in status_counts}
+            'status_breakdown': status_breakdown,
+            'growth': {
+                'total': total_growth,
+                'new': new_growth,
+                'contacted': contacted_growth,
+                'qualified': qualified_growth,
+                'won': won_growth,
+                'lost': lost_growth,
+            }
         })

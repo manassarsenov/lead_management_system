@@ -120,3 +120,4 @@ class DashboardStatsSerializer(Serializer):
     won_leads = IntegerField()
     conversion_rate = FloatField()
     status_breakdown = DictField(child=IntegerField())
+    growth = DictField(child=FloatField())
