@@ -74,3 +74,41 @@ def test_unauthorized_user_cannot_access_profile(api_client):
     response = api_client.get('/api/v1/users/me/')
 
     assert response.status_code == 401
+
+
+def test_user_cannot_change_own_role(auth_client, test_user):
+    auth_client.patch('/api/v1/users/me/', {"role": "admin"})
+    test_user.refresh_from_db()
+    assert test_user.role == 'sales'
+
+
+def test_duplicate_email_registration_fails(api_client, test_user):
+    payload = {
+        "email": test_user.email,
+        "password": "StrongPassword123!",
+        "password_confirm": "StrongPassword123!",
+        "first_name": "Takror",
+        "last_name": "Email"
+    }
+    response = api_client.post('/api/v1/auth/register/', payload)
+    assert response.status_code == 400
+
+
+def test_login_with_wrong_password_fails(api_client, test_user):
+    response = api_client.post('/api/v1/auth/token/', {
+        "email": "testuser@example.com",
+        "password": "NotTheRightPassword"
+    })
+    assert response.status_code == 401
+
+
+def test_weak_password_registration_fails(api_client):
+    payload = {
+        "email": "weak@example.com",
+        "password": "1",
+        "password_confirm": "1",
+        "first_name": "Zaif",
+        "last_name": "Parol"
+    }
+    response = api_client.post('/api/v1/auth/register/', payload)
+    assert response.status_code == 400

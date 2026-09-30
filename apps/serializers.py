@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.contrib.auth.password_validation import validate_password
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField, IntegerField, FloatField, DictField
 from rest_framework.serializers import ModelSerializer, Serializer
@@ -16,7 +17,7 @@ class UserSerializer(ModelSerializer):
         fields = ['id', 'email', 'first_name', 'last_name', 'role', 'department',
                   'phone_number', 'bio', 'notify_new_lead', 'notify_status_change',
                   'notify_activity_updates', 'notify_weekly_reports', 'is_active']
-        read_only_fields = ['id']
+        read_only_fields = ['id', 'role','is_active']
 
 
 class UserCreateSerializer(ModelSerializer):
@@ -30,6 +31,7 @@ class UserCreateSerializer(ModelSerializer):
     def validate(self, attrs):
         if attrs['password'] != attrs['password_confirm']:
             raise ValidationError({"password": "Password fields didn't match."})
+        validate_password(attrs['password'])
         return attrs
 
     def create(self, validated_data):

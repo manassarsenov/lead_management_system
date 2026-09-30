@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'drf_spectacular',
     'corsheaders',
+    'django_filters',
 
 ]
 
@@ -140,8 +141,8 @@ MEDIA_URL = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:63342",
-    "http://127.0.0.1:63342",
+    "http://localhost:5500",
+    "http://127.0.0.1:5500",
 ]
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration

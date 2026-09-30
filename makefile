@@ -4,3 +4,5 @@ mig:
 
 createadmin:
 	./manage.py createsuperuser
+
+

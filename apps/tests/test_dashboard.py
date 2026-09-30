@@ -43,3 +43,21 @@ def test_dashboard_stats_empty_database(auth_client):
     assert response.data['total_leads'] == 0
     assert response.data['total_pipeline_value'] == 0.0
     assert response.data['conversion_rate'] == 0.0
+
+
+def test_dashboard_counts_only_own_leads(auth_client, setup_dashboard_data, other_user):
+    Lead.objects.create(name="Begona", status="won", estimated_value=9999, created_by=other_user)
+
+    response = auth_client.get('/api/v1/dashboard/stats/')
+
+    assert response.data['total_leads'] == 4
+    assert response.data['total_pipeline_value'] == 10000.0
+
+
+def test_admin_dashboard_counts_all_leads(admin_client, setup_dashboard_data, other_user):
+    Lead.objects.create(name="Begona", status="won", estimated_value=9999, created_by=other_user)
+
+    response = admin_client.get('/api/v1/dashboard/stats/')
+
+    assert response.data['total_leads'] == 5
+    assert response.data['total_pipeline_value'] == 19999.0

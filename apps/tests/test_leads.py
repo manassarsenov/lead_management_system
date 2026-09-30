@@ -91,3 +91,32 @@ def test_delete_lead(auth_client, test_user):
 
     assert response.status_code == 204
     assert not Lead.objects.filter(id=lead.id).exists()
+
+
+def _results(response):
+    return response.data['results'] if 'results' in response.data else response.data
+
+
+def test_user_cannot_see_foreign_lead(other_client, test_user):
+    lead = Lead.objects.create(name="Ali lead", email="ali@lead.com", created_by=test_user)
+    response = other_client.get(f'/api/v1/leads/{lead.id}/')
+    assert response.status_code == 404
+
+
+def test_list_hides_foreign_leads(auth_client, other_user):
+    Lead.objects.create(name="Begona", email="begona@test.com", created_by=other_user)
+    response = auth_client.get('/api/v1/leads/')
+    assert len(_results(response)) == 0
+
+
+def test_user_cannot_delete_foreign_lead(other_client, test_user):
+    lead = Lead.objects.create(name="Ali lead", email="ali@lead.com", created_by=test_user)
+    response = other_client.delete(f'/api/v1/leads/{lead.id}/')
+    assert response.status_code == 404
+    assert Lead.objects.filter(id=lead.id).exists()
+
+
+def test_admin_sees_foreign_lead(admin_client, test_user):
+    lead = Lead.objects.create(name="Ali lead", email="ali@lead.com", created_by=test_user)
+    response = admin_client.get(f'/api/v1/leads/{lead.id}/')
+    assert response.status_code == 200

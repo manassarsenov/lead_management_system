@@ -6,6 +6,14 @@ from rest_framework_simplejwt.tokens import RefreshToken
 User = get_user_model()
 
 
+def make_client(user):
+    """Berilgan foydalanuvchi uchun alohida, tokenli klient yaratadi."""
+    client = APIClient()
+    token = RefreshToken.for_user(user).access_token
+    client.credentials(HTTP_AUTHORIZATION=f'Bearer {token}')
+    return client
+
+
 # 1. API ga so'rov yuboruvchi oddiy "brauzer" (klient)
 @pytest.fixture
 def api_client():
@@ -26,11 +34,8 @@ def test_user(db):
 
 # 3. Tizimga kirgan (Login qilgan va token olgan) tayyor User klienti
 @pytest.fixture
-def auth_client(api_client, test_user):
-    # To'g'ridan-to'g'ri JWT token yaratib klientga o'rnatamiz (juda tez ishlaydi)
-    refresh = RefreshToken.for_user(test_user)
-    api_client.credentials(HTTP_AUTHORIZATION=f'Bearer {refresh.access_token}')
-    return api_client
+def auth_client(test_user):
+    return make_client(test_user)
 
 
 # 4. Admin huquqiga ega bo'lgan User (Admin endpointlarni testlash uchun kerak bo'ladi)
@@ -45,9 +50,22 @@ def admin_user(db):
     return user
 
 
+@pytest.fixture
+def other_user(db):
+    return User.objects.create_user(
+        email='other@example.com',
+        password='TestPassword123!',
+        first_name='Vali',
+        last_name='Karimov'
+    )
+
+
+@pytest.fixture
+def other_client(other_user):
+    return make_client(other_user)
+
+
 # 5. Admin huquqiga ega bo'lgan klient
 @pytest.fixture
-def admin_client(api_client, admin_user):
-    refresh = RefreshToken.for_user(admin_user)
-    api_client.credentials(HTTP_AUTHORIZATION=f'Bearer {refresh.access_token}')
-    return api_client
+def admin_client(admin_user):
+    return make_client(admin_user)
