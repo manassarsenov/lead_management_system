@@ -285,7 +285,40 @@ function createStatusBadge(status) {
 }
 
 // User Profile Dropdown
+function updateHeaderUserInfo() {
+    try {
+        const userStr = localStorage.getItem('user');
+        if (userStr) {
+            const user = JSON.parse(userStr);
+            const fullName = `${user.first_name || ''} ${user.last_name || ''}`.trim() || user.email || 'Foydalanuvchi';
+            const role = user.role ? (user.role.charAt(0).toUpperCase() + user.role.slice(1)) : 'User';
+            const initials = fullName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'U';
+
+            const nameEl = document.getElementById('header-user-name');
+            const roleEl = document.getElementById('header-user-role');
+            const avatarEl = document.getElementById('header-user-avatar');
+
+            if (nameEl) nameEl.textContent = fullName;
+            if (roleEl) roleEl.textContent = role;
+            if (avatarEl) {
+                const span = avatarEl.querySelector('span');
+                if (span) span.textContent = initials;
+            }
+        } else {
+            apiJson('/users/me/').then(user => {
+                if (user) {
+                    localStorage.setItem('user', JSON.stringify(user));
+                    updateHeaderUserInfo();
+                }
+            }).catch(() => {});
+        }
+    } catch (e) {
+        console.error('Error updating header user info:', e);
+    }
+}
+
 function initUserProfile() {
+    updateHeaderUserInfo();
     const userProfile = document.getElementById('user-profile');
     if (!userProfile) return;
 
