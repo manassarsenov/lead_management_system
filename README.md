@@ -1,78 +1,49 @@
 # Lead Management System (Mini CRM)
 
-Bu loyiha kompaniyalar va jamoalar uchun mo'ljallangan kichik CRM (Lead Management System) tizimi bo'lib, mijozlar (leads) oqimini qabul qilish, boshqarish, statuslarini o'zgartirish (`New`, `Contacted`, `Qualified`, `Won`, `Lost`), faoliyatlar (`activities`) tarixini yuritish va dashboard statistikalarini ko'rish imkonini beradi.
+Men ushbu loyihani kompaniyalar va jamoalar uchun mijozlar oqimini (`leads`) boshqarish, ularning statuslarini kuzatish (`New`, `Contacted`, `Qualified`, `Won`, `Lost`), faoliyatlar (`activities`) tarixini yuritish va dashboard statistikalarini ko'rish uchun kichik CRM tizimi sifatida yaratdim.
 
 ---
 
-## 🏗️ 1. Loyiha Arxitekturasi va Qanday Ishlaydi?
+## 🏗️ Loyiha Arxitekturasi va Qanday Ishladim?
 
-### Backend (Django + DRF)
-- **Framework:** Django & Django REST Framework (DRF)
-- **Autentifikatsiya:** SimpleJWT (`/api/v1/auth/token/`, `/api/v1/auth/refresh-token/`). Tokenlar `access` va `refresh` ko'rinishida ishlaydi.
-- **Ma'lumotlar bazasi (Database):** SQLite (`db.sqlite3`), relational models (`User`, `Lead`, `LeadActivity`).
-- **API Hujjatlari:** DRF Spectacular orqali avtomatik generatsiya qilingan Swagger UI va Redoc.
+### Backend Qismi (Django + DRF)
+- **Framework sifatida:** Django va Django REST Framework (DRF) ishlatdim.
+- **Autentifikatsiya uchun:** SimpleJWT orqali xavfsiz JWT token (`access` va `refresh`) tizimini qurdum (`/api/v1/auth/token/`).
+- **Ma'lumotlar bazasi:** SQLite yordamida relational (`User`, `Lead`, `LeadActivity`) modellarni bog'ladim.
+- **API Hujjatlari:** DRF Spectacular orqali Swagger UI va Redoc hujjatlarini tayyorladim.
 
-### Frontend (Vanilla HTML, CSS, JS + Component Loader)
-- **Arxitektura:** Django template inheritance o'rniga **JavaScript Component Loader** (`frontend/js/component_loader.js`) ishlatilgan. Bu orqali `components/` papkasidagi umumiy qismlar (`sidebar.html`, `header.html`, `modals.html`, `toasts.html`) barcha sahifalarga (`dashboard.html`, `leads_list.html` va h.k.) dinamik ravishda yuklanadi. DRY (Don't Repeat Yourself) tamoyiliga to'liq amal qilingan.
-- **API Aloqasi:** `frontend/js/main_base.js` ichidagi `apiFetch` va `apiJson` funksiyalari orqali backend API bilan `Authorization: Bearer <access_token>` sarlavhasi yordamida muloqot qilinadi. Agar token eskirsa (401 error), avtomatik ravishda `/api/v1/auth/refresh-token/` orqali yangilanadi yoki `logout()` ishga tushib `login.html`ga yo'naltiriladi.
+### Frontend Qismi (Vanilla HTML, CSS, JS + Component Loader)
+- **Arxitektura:** Django template inheritance (`{% extends %}`) ishlatmasdan, mutlaqo mustaqil statik HTML sahifalar qilib tuzdim. Kod takrorlanmasligi (DRY) uchun `frontend/components/` ostida sidebar, header, modal va toastlarni ajratib, ularni `component_loader.js` orqali dinamik ravishda yuklayman (`explanation_1.md` ga qarang).
+- **API va Token Boshqaruvi:** `main_base.js` dagi `apiFetch` orqali so'rovlar yuboraman. Token eskirganda 401 xatosini tutib, avtomatik ravishda yangi token olaman (`refresh-token`) yoki `logout()` qilib `login.html`ga yo'naltiraman.
 
 ---
 
-## 🚀 2. Loyihani To'liq Ishga tushirish Qo'llanmasi (Step-by-Step)
+## 🚀 Loyihani Qanday Ishga Tushiraman? (Step-by-Step)
 
-Sizning ishchi muhitingiz (`/home/manas/PycharmProjects/lead_management_system`) bo'yicha aniq buyruqlar quyidagicha:
+O'z kompyuterimda (`/home/manas/PycharmProjects/lead_management_system`) loyihani quyidagi aniq qadamlar bilan ishga tushiraman:
 
-### 1-Qadam: Backend Serverni Ishga tushirish
-
-Terminalni ochib, loyiha ildiz papkasiga o'ting va quyidagi buyruqlarni bajaring:
-
+### 1-Qadam: Backend Serverni Ishga Tushirish
+Terminalda quyidagi buyruqlarni bajaraman:
 ```bash
-# 1. Loyiha papkasiga o'tish
 cd /home/manas/PycharmProjects/lead_management_system
-
-# 2. Virtual muhitni (venv) faollashtirish
 source .venv/bin/activate
-
-# 3. Ma'lumotlar bazasi migratsiyalarini bajarish
 python manage.py migrate
-
-# 4. Test ma'lumotlarini (user va leadlar) bazaga kiritish (ixtiyoriy)
 python manage.py seed_data
-
-# 5. Django backend serverini 8000-portda ishga tushirish
 python manage.py runserver
 ```
-* **Backend ishga tushgan manzil:** `http://127.0.0.1:8000/`
-* **API Endpoints bazasi:** `http://127.0.0.1:8000/api/v1/`
-* **Swagger UI Docs:** `http://127.0.0.1:8000/api/schema/swagger-ui/`
-* **Django Admin:** `http://127.0.0.1:8000/admin/`
+* **Backend manzili:** `http://127.0.0.1:8000/`
+* **Swagger Docs:** `http://127.0.0.1:8000/api/schema/swagger-ui/`
 
----
-
-### 2-Qadam: Frontend Serverni Ishga tushirish
-
-Yangi terminal oynasini ochib, statik HTML/JS fayllarni (`frontend` papkasi) Pythonning o'rnatilgan http serveri orqali maxsus portda (masalan, **5500**) ishga tushirasiz:
-
+### 2-Qadam: Frontend Serverni Ishga Tushirish
+Boshqa terminal oynasida quyidagi buyruqni ishlataman:
 ```bash
-# 1. Loyiha papkasiga o'tish
 cd /home/manas/PycharmProjects/lead_management_system
-
-# 2. Frontend papkasini 5500-portda serve qilish
 python -m http.server 5500 --directory frontend
 ```
-
-* **Frontend ishga tushgan manzil:** `http://localhost:5500/login.html`
-* Brauzeringizda ushbu havolani oching va `seed_data` orqali yaratilgan yoki o'zingiz ro'yxatdan o'tgan foydalanuvchi ma'lumotlari bilan tizimga kiring.
+* **Frontend manzili:** `http://localhost:5500/login.html`
 
 ---
 
-## 🔑 3. Tizimda Ishlash va Navigatsiya (Login / Logout / Flow)
-
-1. **Login Sahifasi (`login.html`):**
-   - Email va parol kiritilib `POST /api/v1/auth/token/` ga so'rov yuboriladi.
-   - Olingan `access` va `refresh` tokenlar brauzerning `localStorage` xotirasiga saqlanadi va foydalanuvchi avtomatik ravishda `dashboard.html` ga o'tkaziladi.
-2. **Dashboard (`dashboard.html`) & Leadlar (`leads_list.html`):**
-   - Barcha leadlarni ko'rish, status bo'yicha filtrlash (`New`, `Contacted`, `Qualified`, `Won`, `Lost`), qidirish va yangi lead qo'shish mumkin.
-   - Har bir leadning tafsilotlari (`lead_detail.html`) sahifasida uning ma'lumotlarini tahrirlash va faoliyatlar (`activities`) qo'shish mumkin.
-3. **Logout:**
-   - Yuqori o'ng burchakdagi foydalanuvchi menyusidan **Logout** tugmasi bosilganda `localStorage.clear()` ishlaydi va foydalanuvchi darhol `login.html` sahifasiga qaytariladi.
+## 🔑 Tizimda Kirish va Chiqish (Login & Logout Flow)
+- **Login:** `login.html` orqali ma'lumotlarimni kiritib token olaman va uni `localStorage`da saqlab, `dashboard.html`ga o'taman.
+- **Logout:** Menyu orqali "Logout" tugmasini bosganimda, `localStorage.clear()` ishlaydi va meni darhol `login.html` sahifasiga qaytaradi.
