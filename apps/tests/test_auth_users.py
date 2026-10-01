@@ -112,3 +112,25 @@ def test_weak_password_registration_fails(api_client):
     }
     response = api_client.post('/api/v1/auth/register/', payload)
     assert response.status_code == 400
+
+
+def test_change_password_success(auth_client, test_user):
+    payload = {
+        "current_password": "TestPassword123!",
+        "new_password": "NewStrongPassword123!",
+        "new_password_confirm": "NewStrongPassword123!"
+    }
+    response = auth_client.post('/api/v1/auth/change-password/', payload)
+    assert response.status_code == 200
+    test_user.refresh_from_db()
+    assert test_user.check_password("NewStrongPassword123!")
+
+
+def test_change_password_wrong_current_password_fails(auth_client, test_user):
+    payload = {
+        "current_password": "WrongOldPassword!",
+        "new_password": "NewStrongPassword123!",
+        "new_password_confirm": "NewStrongPassword123!"
+    }
+    response = auth_client.post('/api/v1/auth/change-password/', payload)
+    assert response.status_code == 400

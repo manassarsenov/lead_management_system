@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import CharField, IntegerField, FloatField, DictField
+from rest_framework.fields import CharField, IntegerField, FloatField, DictField, ListField
 from rest_framework.serializers import ModelSerializer, Serializer
 from rest_framework_simplejwt.serializers import TokenObtainSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -120,4 +120,24 @@ class DashboardStatsSerializer(Serializer):
     won_leads = IntegerField()
     conversion_rate = FloatField()
     status_breakdown = DictField(child=IntegerField())
+    source_breakdown = DictField(child=IntegerField(), required=False)
+    trend_data = ListField(child=DictField(), required=False)
     growth = DictField(child=FloatField())
+
+
+class ChangePasswordSerializer(Serializer):
+    current_password = CharField(required=True, write_only=True)
+    new_password = CharField(required=True, write_only=True)
+    new_password_confirm = CharField(required=True, write_only=True)
+
+    def validate(self, attrs):
+        if attrs['new_password'] != attrs['new_password_confirm']:
+            raise ValidationError({"new_password": "New password fields didn't match."})
+        validate_password(attrs['new_password'])
+        return attrs
+
+    def validate_current_password(self, value):
+        user = self.context['request'].user
+        if not user.check_password(value):
+            raise ValidationError("Current password is incorrect.")
+        return value

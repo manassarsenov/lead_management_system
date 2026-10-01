@@ -16,7 +16,8 @@ from apps.models import Lead, LeadActivity
 from apps.serializers import (
     UserCreateSerializer, UserSerializer,
     LeadSerializer, LeadCreateSerializer, LeadUpdateSerializer, LeadListSerializer,
-    LeadActivitySerializer, CustomTokenObtainPairSerializer, DashboardStatsSerializer
+    LeadActivitySerializer, CustomTokenObtainPairSerializer, DashboardStatsSerializer,
+    ChangePasswordSerializer
 )
 
 User = get_user_model()
@@ -188,12 +189,28 @@ class DashboardStatsAPIView(APIView):
         won_growth = calc_growth(leads, 'won')
         lost_growth = calc_growth(leads, 'lost')
 
+        # Source breakdown
+        source_counts = leads.order_by().values('source').annotate(count=Count('id'))
+        source_breakdown = {item['source']: item['count'] for item in source_counts}
+
+        # Trend data for the last 7 days
+        trend_data = []
+        for i in range(6, -1, -1):
+            day_date = (now - timedelta(days=i)).date()
+            day_count = leads.filter(created_at__date=day_date).count()
+            trend_data.append({
+                'date': day_date.strftime('%b %d'),
+                'count': day_count
+            })
+
         return Response({
             'total_leads': total_leads,
             'total_pipeline_value': float(total_pipeline_value),
             'won_leads': won_leads,
             'conversion_rate': conversion_rate,
             'status_breakdown': status_breakdown,
+            'source_breakdown': source_breakdown,
+            'trend_data': trend_data,
             'growth': {
                 'total': total_growth,
                 'new': new_growth,
@@ -203,3 +220,18 @@ class DashboardStatsAPIView(APIView):
                 'lost': lost_growth,
             }
         })
+
+
+@extend_schema(tags=['auth'])
+class ChangePasswordAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = ChangePasswordSerializer
+
+    def post(self, request):
+        serializer = ChangePasswordSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            user = request.user
+            user.set_password(serializer.validated_data['new_password'])
+            user.save()
+            return Response({"detail": "Password updated successfully."}, status=200)
+        return Response(serializer.errors, status=400)

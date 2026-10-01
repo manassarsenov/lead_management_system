@@ -2,7 +2,8 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from apps.views import (
     CustomTokenObtainPairView, CustomTokenRefreshView,
-    RegisterCreateAPIView, UserViewSet, LeadViewSet, LeadActivityViewSet, UserProfileView, DashboardStatsAPIView
+    RegisterCreateAPIView, UserViewSet, LeadViewSet, LeadActivityViewSet, UserProfileView, DashboardStatsAPIView,
+    ChangePasswordAPIView
 )
 
 router = DefaultRouter()
@@ -17,6 +18,7 @@ urlpatterns = [
     path('auth/token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('auth/refresh-token/', CustomTokenRefreshView.as_view(), name='token_refresh'),
     path('auth/register/', RegisterCreateAPIView.as_view(), name='register'),
+    path('auth/change-password/', ChangePasswordAPIView.as_view(), name='change_password'),
 
     path('', include(router.urls)),
 ]

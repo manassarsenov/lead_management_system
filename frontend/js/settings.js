@@ -81,7 +81,7 @@ function initPasswordForm() {
     const form = document.getElementById('password-form');
     if (!form) return;
 
-    form.addEventListener('submit', function(e) {
+    form.addEventListener('submit', async function(e) {
         e.preventDefault();
         
         const currentPassword = document.getElementById('current-password').value;
@@ -103,8 +103,34 @@ function initPasswordForm() {
             return;
         }
 
-        Toast.success('Password update functionality can be integrated with backend auth endpoint.');
-        form.reset();
+        const submitBtn = form.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Updating...';
+
+        try {
+            await apiJson('/auth/change-password/', {
+                method: 'POST',
+                body: JSON.stringify({
+                    current_password: currentPassword,
+                    new_password: newPassword,
+                    new_password_confirm: confirmPassword
+                })
+            });
+            Toast.success('Password updated successfully');
+            form.reset();
+        } catch (error) {
+            console.error('Password change error:', error);
+            let errorMsg = 'Parolni o‘zgartirishda xatolik yuz berdi: ';
+            if (error && typeof error === 'object') {
+                for (let key in error) {
+                    errorMsg += `\n${key}: ${Array.isArray(error[key]) ? error[key].join(', ') : error[key]}`;
+                }
+            }
+            Toast.error(errorMsg);
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Update Password';
+        }
     });
 }
 
